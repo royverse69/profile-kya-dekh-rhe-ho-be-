@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Greeting For You</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* General Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: white;
+            text-align: center;
+        }
+
+        /* Heart animation container */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -50px;
+            font-size: 2rem;
+            animation: fly 10s linear infinite;
+            opacity: 0;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        }
+
+        /* Heart flying animation */
+        @keyframes fly {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(15vw) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Enter Screen */
+        #enter-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #enter-btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ff69b4;
+            background: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        #enter-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Main content container */
+        .main-container {
+            position: relative;
+            z-index: 1;
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Greeting Text */
+        #greeting {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            animation: fadeIn 3s forwards;
+        }
+
+        /* Progress Bar */
+        #progress-container {
+            display: none;
+            width: 90%;
+            max-width: 400px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            margin-top: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #ff69b4, #ff1493);
+            border-radius: 20px;
+            transition: width 2.5s ease-in-out;
+        }
+        
+        #progress-container::before {
+            content: 'Loading Love...';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+        }
+
+
+        /* Question Card */
+        #question-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 30px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            opacity: 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s forwards;
+        }
+
+        #question-card h2 {
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Buttons */
+        .choice-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .choice-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #girl-btn {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+        }
+
+        #boy-btn {
+            background: linear-gradient(45deg, #1e90ff, #00bfff);
+        }
+
+        /* Result Screens */
+        .result-screen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 1s forwards;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            gap: 20px; /* Added for spacing between image and countdown */
+        }
+
+        .result-screen img {
+            max-width: 90%;
+            max-height: 70vh;
+            width: 350px;
+            height: 350px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Boy result specific - falling text animation */
+        #boy-result {
+            overflow: hidden;
+        }
+        
+        #video-wrapper {
+            width: 90%;
+            max-width: 640px;
+            aspect-ratio: 16 / 9;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        #video-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .falling-text {
+            position: absolute;
+            top: -50px;
+            color: white;
+            font-size: 1.2rem;
+            user-select: none;
+            animation: fall linear forwards;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(105vh);
+            }
+        }
+
+        /* Countdown text for girl section */
+        #countdown-message {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+            margin-top: 20px;
+        }
+
+        /* Watermark */
+        #watermark {
+            position: fixed;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.8rem;
+            color: white;
+            opacity: 0.6;
+            z-index: 50;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            #greeting {
+                font-size: 2.5rem;
+            }
+            #question-card h2 {
+                font-size: 1.2rem;
+            }
+            .choice-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+             .result-screen img {
+                width: 280px;
+                height: 280px;
+            }
+            #countdown-message {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Container for the animated hearts -->
+    <div class="hearts-container" id="hearts-container"></div>
+    <div id="watermark">@royverse</div>
+
+    <!-- Enter Screen -->
+    <div id="enter-screen">
+        <button id="enter-btn">Click to Enter</button>
+    </div>
+    
+    <!-- Main content area -->
+    <div class="main-container">
+        <h1 id="greeting"></h1>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="question-card">
+            <h2>Are you a girl or a boy?</h2>
+            <div class="button-container">
+                <button id="girl-btn" class="choice-btn">Girl 💖</button>
+                <button id="boy-btn" class="choice-btn">Boy 😎</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Result screen for "Girl" -->
+    <div id="girl-result" class="result-screen">
+        <img src="https://images.pexels.com/photos/1024984/pexels-photo-1024984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Romantic Couple">
+        <p id="countdown-message">I have a surprise for you cutie in 7 seconds...</p>
+    </div>
+
+    <!-- Result screen for "Boy" -->
+    <div id="boy-result" class="result-screen">
+         <div id="video-wrapper"></div>
+    </div>
+
+    <!-- Audio Files -->
+    <audio id="main-bgm" src="https://cdn.pixabay.com/download/audio/2022/02/14/audio_333fd92a9b.mp3" loop></audio>
+    <audio id="girl-bgm" src="https://cdn.pixabay.com/download/audio/2023/10/11/audio_13880c2394.mp3" loop></audio>
+    <audio id="girl-click-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_bb630cc098.mp3"></audio>
+    <audio id="boy-click-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_14243bcd51.mp3"></audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const enterScreen = document.getElementById('enter-screen');
+            const enterBtn = document.getElementById('enter-btn');
+            const mainContainer = document.querySelector('.main-container');
+            const greetingEl = document.getElementById('greeting');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const questionCard = document.getElementById('question-card');
+            const girlBtn = document.getElementById('girl-btn');
+            const boyBtn = document.getElementById('boy-btn');
+            const girlResult = document.getElementById('girl-result');
+            const boyResult = document.getElementById('boy-result');
+            const heartsContainer = document.getElementById('hearts-container');
+            const countdownMessageEl = document.getElementById('countdown-message');
+            
+            // Audio elements
+            const mainBgm = document.getElementById('main-bgm');
+            const girlBgm = document.getElementById('girl-bgm');
+            const girlClickSound = document.getElementById('girl-click-sound');
+            const boyClickSound = document.getElementById('boy-click-sound');
+
+            // --- Entry Point ---
+            enterBtn.addEventListener('click', () => {
+                enterScreen.style.display = 'none';
+                mainContainer.style.display = 'flex';
+                mainBgm.play().catch(e => console.error("Main BGM play failed:", e));
+                setGreeting();
+            });
+
+            // --- Set Greeting Based on Time ---
+            const setGreeting = () => {
+                const hour = new Date().getHours();
+                let greetingText = '';
+                if (hour < 12) {
+                    greetingText = "Good Morning ❤️";
+                } else if (hour < 18) {
+                    greetingText = "Good Afternoon ❤️";
+                } else if (hour < 21) {
+                    greetingText = "Good Evening ❤️";
+                } else {
+                    greetingText = "Good Night ❤️";
+                }
+                greetingEl.textContent = greetingText;
+
+                // Show the progress bar after the greeting animation
+                setTimeout(() => {
+                    startProgressBar();
+                }, 3000); 
+            };
+            
+            // --- Progress Bar Logic ---
+            const startProgressBar = () => {
+                progressContainer.style.display = 'block';
+                // Use a short timeout to ensure the display property is set before transition starts
+                setTimeout(() => {
+                     progressBar.style.width = '100%';
+                }, 100);
+            };
+
+            progressBar.addEventListener('transitionend', () => {
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    questionCard.style.display = 'flex';
+                }, 500); // A small delay before showing the card
+            });
+
+            // --- Create Floating Hearts ---
+            const createHeart = () => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.animationDuration = `${Math.random() * 5 + 5}s`; // 5s to 10s duration
+                heart.innerHTML = '&#10084;'; // Heart emoji HTML entity
+                heartsContainer.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 10000); // Remove heart after 10 seconds
+            };
+            
+            setInterval(createHeart, 300);
+
+            // --- "Girl" Button Logic ---
+            girlBtn.addEventListener('click', () => {
+                girlClickSound.play();
+                mainBgm.pause();
+                mainContainer.style.display = 'none';
+                girlResult.style.display = 'flex';
+                girlBgm.play().catch(e => console.error("Girl BGM play failed:", e));
+
+                let countdown = 7;
+                countdownMessageEl.textContent = `I have a surprise for you cutie in ${countdown} seconds...`;
+
+                const countdownInterval = setInterval(() => {
+                    countdown--;
+                    if (countdown > 0) {
+                        countdownMessageEl.textContent = `I have a surprise for you cutie in ${countdown} seconds...`;
+                    } else {
+                        clearInterval(countdownInterval);
+                        window.location.href = 'https://www.amazon.in/Astonished-Retail-Chocolate-Handcrafted-Anniversary/dp/B08L1SHZRY/ref=sr_1_5?sr=8-5';
+                    }
+                }, 1000);
+            });
+            
+            // --- "Boy" Button Logic ---
+            boyBtn.addEventListener('click', () => {
+                mainBgm.pause();
+                boyClickSound.play().catch(e => console.error("Boy click sound play failed:", e));
+
+                boyClickSound.addEventListener('ended', () => {
+                    mainContainer.style.display = 'none';
+                    boyResult.style.display = 'flex';
+                    
+                    const videoWrapper = document.getElementById('video-wrapper');
+                    if (!videoWrapper.querySelector('iframe')) {
+                        const iframe = document.createElement('iframe');
+                        iframe.src = "https://www.youtube.com/embed/TpsXy3087Vs?si=tD3xV7uF3kWcM2J7y&t=11&autoplay=1";
+                        iframe.title = "YouTube video player";
+                        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+                        iframe.allowFullscreen = true;
+                        videoWrapper.appendChild(iframe);
+                    }
+                    setInterval(createFallingText, 200);
+                }, { once: true });
+            });
+
+            const createFallingText = () => {
+                const text = document.createElement('div');
+                text.classList.add('falling-text');
+                text.textContent = 'Not for you, bro! 😜';
+                text.style.left = `${Math.random() * 95}vw`;
+                const duration = Math.random() * 3 + 2; // 2s to 5s
+                text.style.animation = `fall ${duration}s linear forwards`;
+                boyResult.appendChild(text);
+
+                setTimeout(() => {
+                    text.remove();
+                }, duration * 1000);
+            };
+
+        });
+    </script>
+</body>
+</html>
+
