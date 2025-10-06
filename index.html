@@ -20,6 +20,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             height: 100vh;
+            min-height: 100vh; /* Ensures full height on mobile browsers */
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -43,7 +44,7 @@
         .heart {
             position: absolute;
             bottom: -50px;
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 5vw, 2rem); /* Responsive heart size */
             animation: fly 10s linear infinite;
             opacity: 0;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
@@ -101,13 +102,14 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            width: 90%; /* Use percentage for width */
             padding: 20px;
         }
 
         /* Greeting Text */
         #greeting {
             font-family: 'Dancing Script', cursive;
-            font-size: 4rem;
+            font-size: clamp(2.5rem, 12vw, 4rem); /* Fluid font size */
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
             opacity: 0;
             animation: fadeIn 3s forwards;
@@ -116,7 +118,7 @@
         /* Progress Bar */
         #progress-container {
             display: none;
-            width: 90%;
+            width: 100%;
             max-width: 400px;
             height: 30px;
             background: rgba(255, 255, 255, 0.2);
@@ -154,7 +156,7 @@
         #question-card {
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
-            padding: 40px;
+            padding: clamp(20px, 5vw, 40px); /* Fluid padding */
             border-radius: 20px;
             margin-top: 30px;
             display: none;
@@ -162,13 +164,15 @@
             align-items: center;
             gap: 20px;
             opacity: 0;
+            width: 100%;
+            max-width: 500px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
             animation: fadeIn 1s forwards;
         }
 
         #question-card h2 {
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 5vw, 1.5rem); /* Fluid font size */
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
         }
 
@@ -215,14 +219,15 @@
             position: absolute;
             width: 100%;
             height: 100%;
+            padding: 20px;
             gap: 20px; /* Added for spacing between image and countdown */
         }
 
         .result-screen img {
-            max-width: 90%;
+            width: 100%; /* Make image fluid */
+            height: auto; /* Maintain aspect ratio */
+            max-width: 350px;
             max-height: 70vh;
-            width: 350px;
-            height: 350px;
             border-radius: 20px;
             object-fit: cover;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -234,7 +239,7 @@
         }
         
         #video-wrapper {
-            width: 90%;
+            width: 95%;
             max-width: 640px;
             aspect-ratio: 16 / 9;
             border-radius: 15px;
@@ -253,7 +258,7 @@
             position: absolute;
             top: -50px;
             color: white;
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 4vw, 1.2rem); /* Fluid font size */
             user-select: none;
             animation: fall linear forwards;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
@@ -268,7 +273,7 @@
         /* Countdown text for girl section */
         #countdown-message {
             font-family: 'Dancing Script', cursive;
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 7vw, 2rem); /* Fluid font size */
             text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
             margin-top: 20px;
         }
@@ -292,24 +297,11 @@
             }
         }
         
-        /* Responsive Design */
+        /* Responsive Design Adjustments */
         @media (max-width: 600px) {
-            #greeting {
-                font-size: 2.5rem;
-            }
-            #question-card h2 {
-                font-size: 1.2rem;
-            }
             .choice-btn {
                 padding: 10px 20px;
                 font-size: 0.9rem;
-            }
-             .result-screen img {
-                width: 280px;
-                height: 280px;
-            }
-            #countdown-message {
-                font-size: 1.5rem;
             }
         }
     </style>
@@ -342,7 +334,7 @@
     
     <!-- Result screen for "Girl" -->
     <div id="girl-result" class="result-screen">
-        <img src="https://images.pexels.com/photos/1024984/pexels-photo-1024984.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Romantic Couple">
+        <img src="https://media.tenor.com/wku8U_7YRFgAAAAi/cute-cat.gif" alt="Romantic Couple">
         <p id="countdown-message">I have a surprise for you cutie in 7 seconds...</p>
     </div>
 
@@ -352,15 +344,11 @@
     </div>
 
     <!-- Audio Files -->
-    <!-- Audio Files -->
+    <audio id="main-bgm" src="audio_4.mp3" loop></audio>
+    <audio id="girl-bgm" src="audio_2.mp3" loop></audio>
+    <audio id="girl-click-sound" src="audio_3.mp3"></audio>
+    <audio id="boy-click-sound" src="audio.mp3"></audio>
 
-    <audio id="main-bgm" src="audio_4.mp3" loop></audio>
-
-    <audio id="girl-bgm" src="audio_2.mp3" loop></audio>
-
-    <audio id="girl-click-sound" src="audio_3.mp3"></audio>
-
-    <audio id="boy-click-sound" src="audio.mp3"></audio>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const enterScreen = document.getElementById('enter-screen');
